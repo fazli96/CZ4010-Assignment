@@ -4,7 +4,7 @@ Linear Cryptanalysis on SPN cipher
 # Objective
 
 The objective of this project is to implement a linear cryptanalysis attack against a
-Substitution-Permutation Network (SPN) in order to recover at least all the bits of the final round key. The SPN network used for this project consists of only 4 rounds with each Substitution-Box (S-box) being the same across all the rounds. Each round consists of substitution, a transposition of the bits (i.e., permutation of the bit positions), and key mixing.
+Substitution-Permutation Network (SPN) in order to recover at least all the bits of the final round key. The SPN network used for this project as shown in Figure 1 consists of only 4 rounds with each Substitution-Box (S-box) being the same across all the rounds. Each round consists of substitution, a transposition of the bits (i.e., permutation of the bit positions), and key mixing.
 
 # Development
 
@@ -36,7 +36,7 @@ There are two ways of running the code, one being using Google Colab and the oth
 
 # Cipher
 
-
+![SPN Cipher](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/SPN_Cipher.png?raw=true)
 
 > Figure 1: Substitution-Permutation Network (SPN)
 
@@ -44,7 +44,7 @@ There are two ways of running the code, one being using Google Colab and the oth
 
 In our cipher, we break the 16-bit data block into four 4-bit sub-blocks. Each sub-block forms an input to a 4×4 S-box (a substitution with 4 input and 4 output bits), which is a nonlinear mapping, where the output bits cannot be represented as a linear operation on the input bits.The mapping chosen for our S-box, is given in Table 1, where the most significant bit of the hexadecimal notation represents the leftmost bit of the S-box. The S-box mapping is illustrated in the functions sbox_map (input to output) and sbox_inverse_map (output to input). Encryption of a 16-bit data block using the 4 S-boxes is illustrated in the function sbox_encrypt(state) whereas its decryption is illustrated in the function sbox_decrypt(state).
 
-
+![Sbox Mapping](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Sbox_Mapping.png?raw=true)
 
 > Table 1: S-box mapping
 
@@ -52,7 +52,7 @@ In our cipher, we break the 16-bit data block into four 4-bit sub-blocks. Each s
 
 The permutation portion of a round is simply the transposition of the bits or the Permutation-Box (P-box). The permutation of our P-box is given in Table 2 where the numbers represent bit positions in the block, with 1 being the leftmost bit and 16 being the rightmost bit and can be simply described as: the output i of S-box<sub>j</sub> is connected to input j of S-box<sub>i</sub>. In our cipher, the last round does not have a P-box. The P-box mapping is illustrated in the function pbox_map. As P-box is simply the transposition of the bits, both encryption and decryption of a 16-bit data block using the 4 S-boxes is illustrated in the function pbox(state).
 
-
+![Pbox Mapping](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Pbox_Mapping.png?raw=true)
 
 > Table 2: P-box mapping
 
@@ -85,7 +85,7 @@ where X<sub>i</sub> represents the i-th bit of the input X = [X<sub>1</sub>, X<s
 
 The Piling-Up Lemma proposed by Matsui can be used to determine the bias for the linear approximation of a cipher. The Piling-Up Lemma can be simplified to the equation below:
 
-
+![Piling-Up Lemma](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Piling_Up_Lemma.png?raw=true)
 
 where ε<sub>1,2,..,n</sub> represents the bias of X<sub>1</sub> ⊕ ... ⊕ X<sub>n</sub> = 0 for n independent, random binary variables, X<sub>1</sub>, X<sub>2</sub>, ...X<sub>n</sub>.
 
@@ -95,7 +95,7 @@ The Piling up Lemma is illustrated in the function piling_up_lemma(bias_list) wh
 
 Before considering the linear cryptanalysis attack on the cipher, we must know the linear vulnerabilities of an S-box by finding the probability bias of the linear approximation of all 16 possible input values of X and their corresponding output values of Y. For example in X<sub>2</sub> ⊕ X<sub>3</sub> = Y<sub>1</sub> ⊕ Y<sub>3</sub> ⊕ Y<sub>4</sub>, it can be observed that for exactly 12 out of the 16 cases , the expression holds true. Hence, the probability bias is 12/16 -1/2 = 1/4. A complete enumeration of all linear approximations of the S-box in our cipher is given in the linear approximation table of Table 3. Each element in the table represents the number of matches between the linear equation represented in hexadecimal as "Input Sum" and the sum of the output bits represented in hexadecimal as "Output Sum" minus 8. Hence, dividing an element value by 16 gives the probability bias for the particular linear combination of input and output bits. Table 3 is generated using the function generate_linear_approximation_table().
 
-
+![Linear Approximation Table](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Approx_Table.png?raw=true)
 
 > Table 3: Linear Approximation Table
 
