@@ -113,7 +113,7 @@ In Matsui’s paper, he shows that the number of known plaintexts required in th
 
 ## Linear Approximations used to recover partial subkey values [K<sub>5,5</sub>...K<sub>5,8</sub>] and [K<sub>5,13</sub>...K<sub>5,16</sub>]
 
-![Linear Approx Trail 5th Round Key 1](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_5th_Round_Key_1.png?raw=true)
+<img src="https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_5th_Round_Key_1.png" width="30%">
 
 We use the following approximations of the S-box:
 
@@ -153,7 +153,7 @@ We have simulated attacking our basic cipher by generating 10000 known plaintext
 
 ## Linear Approximations used to recover partial subkey values [K<sub>5,1</sub>...K<sub>5,4</sub>] and [K<sub>5,9</sub>...K<sub>5,12</sub>]
 
-![Linear Approx Trail 5th Round Key 2](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_5th_Round_Key_2.png?raw=true)
+<img src="https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_5th_Round_Key_2.png" width="30%">
 
 We use the following approximations of the S-box:
 
@@ -187,7 +187,7 @@ Thus, we managed to recover the 5th round key = 0x38ea
 
 ## Linear Approximations used to recover partial subkey values [K<sub>4,2</sub>, K<sub>4,4</sub>, K<sub>4,6</sub>, K<sub>4,8</sub>, K<sub>4,10</sub>, K<sub>4,12</sub>, K<sub>4,14</sub>, K<sub>4,16</sub>]
 
-![Linear Approx Trail 4th Round Key 1](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_4th_Round_Key_1.png?raw=true)
+<img src="https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_4th_Round_Key_1.png" width="30%">
 
 We use the following approximations of the S-box:
 
@@ -213,7 +213,7 @@ As the bias is much larger than the bias obtained when recovering the partial su
 
 ## Linear Approximations used to recover partial subkey values [K<sub>4,1</sub>, K<sub>4,3</sub>, K<sub>4,5</sub>, K<sub>4,7</sub>, K<sub>4,9</sub>, K<sub>4,11</sub>, K<sub>4,13</sub>, K<sub>4,15</sub>]
 
-![Linear Approx Trail 4th Round Key 2](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_4th_Round_Key_2.png?raw=true)
+<img src="https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_4th_Round_Key_2.png" width="30%">
 
 We use the following approximations of the S-box:
 
@@ -243,7 +243,7 @@ Thus, we managed to recover the 4th round key = 0x773c
 
 ## Linear Approximations used to recover partial subkey values [K<sub>3,2</sub>, K<sub>3,4</sub>, K<sub>3,6</sub>, K<sub>3,8</sub>, K<sub>3,10</sub>, K<sub>3,12</sub>, K<sub>3,14</sub>, K<sub>3,16</sub>]
 
-![Linear Approx Trail 3rd Round Key 1](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_3rd_Round_Key_1.png?raw=true)
+<img src="https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_3rd_Round_Key_1.png" width="30%">
 
 We use the following approximations of the S-box:
 
@@ -267,7 +267,7 @@ As the bias is much larger than the bias obtained when recovering the 4th round 
 
 ## Linear Approximations used to recover partial subkey values [K<sub>3,1</sub>, K<sub>3,3</sub>, K<sub>3,5</sub>, K<sub>3,7</sub>, K<sub>3,9</sub>, K<sub>3,11</sub>, K<sub>3,13</sub>, K<sub>3,15</sub>]
 
-![Linear Approx Trail 3rd Round Key 2](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_3rd_Round_Key_2.png?raw=true)
+<img src="https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_3rd_Round_Key_2.png" width="30%">
 
 We use the following approximations of the S-box:
 
@@ -295,7 +295,7 @@ Thus, we managed to recover the 3rd round key = 0x9fa7
 
 ## Recovering partial subkey values [K<sub>2,2</sub>, K<sub>2,4</sub>, K<sub>2,6</sub>, K<sub>2,8</sub>, K<sub>2,10</sub>, K<sub>2,12</sub>, K<sub>2,14</sub>, K<sub>2,16</sub>]
 
-![Linear Approx Trail 2nd Round Key 1](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_2nd_Round_Key_1.png?raw=true)
+<img src="https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_2nd_Round_Key_1.png" width="30%">
 
 Since U<sub>1,i</sub>=P<sub>i</sub>+K<sub>1,i</sub>,
 
@@ -317,7 +317,7 @@ As the bias is much larger than the bias obtained when recovering the 3rd round 
 
 ## Recovering partial subkey values [K<sub>2,1</sub>, K<sub>2,3</sub>, K<sub>2,5</sub>, K<sub>2,7</sub>, K<sub>2,9</sub>, K<sub>2,11</sub>, K<sub>2,13</sub>, K<sub>2,15</sub>]
 
-![Linear Approx Trail 2nd Round Key 2](https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_2nd_Round_Key_2.png?raw=true)
+<img src="https://github.com/fazli96/CZ4010-Assignment/blob/main/Images/Linear_Trail_2nd_Round_Key_2.png" width="30%">
 
 Since U<sub>1,i</sub>=P<sub>i</sub>+K<sub>1,i</sub>,
 
