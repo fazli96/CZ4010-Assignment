@@ -58,7 +58,13 @@ The permutation portion of a round is simply the transposition of the bits or th
 
 ## Key Mixing
 
-To achieve the key mixing, we use a simple bitwise exclusive-OR between the key bits associated with a round (referred to as a subkey) and the data block input to a round. A subkey is also applied following the last round, ensuring that the last layer of substitution cannot be easily ignored by a cryptanalyst that simply works backward through the last round’s substitution. The subkey for a round is derived from the cipher’s master key through a process known as the key schedule. The key schedule algorithm used for the key mixing is adapted from https://eprint.iacr.org/2020/1545 and illustrated in the function key_scheduler_algo(master_key, num_rounds, alpha = 13, gamma = 8).
+To achieve the key mixing, we use a simple bitwise exclusive-OR between the key bits associated with a round (referred to as a subkey) and the data block input to a round. A subkey is also applied following the last round, ensuring that the last layer of substitution cannot be easily ignored by a cryptanalyst that simply works backward through the last round’s substitution. The subkey for a round is derived from the cipher’s master key through a process known as the key schedule. The key schedule algorithm used for the key mixing is adapted from https://eprint.iacr.org/2020/1545 and illustrated in the function key_scheduler_algo(master_key, num_rounds, alpha = 13, gamma = 8). The following is the round keys generated with master key = 0x6FF91
+
+* Round Key #1: 0x6ff9
+* Round Key #2: 0xd2de
+* Round Key #3: 0x9fa7
+* Round Key #4: 0x773c
+* Round Key #5: 0x38ea
 
 ## Encryption and Decryption
 
@@ -169,4 +175,156 @@ and ΣK is fixed at either 0 or 1 depending on the key of the cipher. By applica
 
 > No of plaintext-ciphertext pairs required >= 1/(-1/128)^2 = 16384 
 
-As the bias is much smaller than the bias obtained when recovering the partial subkey values [K<sub>5,5</sub>...K<sub>5,8</sub>] and [K<sub>5,13</sub>...K<sub>5,16</sub>], the number of plaintext-ciphertext pairs used is much greater. The linear expression of (Equation 3) affects the inputs to S-boxes S<sub>41</sub>, S<sub>42</sub> and S<sub>43</sub> in the last round. Since the partial subkey values [K<sub>5,5</sub>...K<sub>5,8</sub>] has been obtained, for each plaintext/ciphertext sample, we would try all 256 values for the target partial subkey [K<sub>5,1</sub>...K<sub>5,4</sub>, K<sub>5,9</sub>...K<sub>5,12</sub>]. Hence, we have simulated attacking our basic cipher by generating 20000 known plaintext/ciphertext values and using linear cryptanalysis, the partial subkey values [K<sub>5,1</sub>...K<sub>5,4</sub>] and [K<sub>5,9</sub>...K<sub>5,12</sub>] with the largest bias magnitude is 0x3 and 0xE which corresponded to the target partial subkey value [0x3, 0xE], confirming that the attack has successfully derived the subkey bits.
+As the bias is much smaller than the bias obtained when recovering the partial subkey values [K<sub>5,5</sub>...K<sub>5,8</sub>] and [K<sub>5,13</sub>...K<sub>5,16</sub>], the number of plaintext-ciphertext pairs used is much greater. The linear expression of Equation 3 affects the inputs to S-boxes S<sub>41</sub>, S<sub>42</sub> and S<sub>43</sub> in the last round. Since the partial subkey values [K<sub>5,5</sub>...K<sub>5,8</sub>] has been obtained, for each plaintext/ciphertext sample, we would try all 256 values for the target partial subkey [K<sub>5,1</sub>...K<sub>5,4</sub>, K<sub>5,9</sub>...K<sub>5,12</sub>]. For each partial subkey value, we would increment the count whenever Equation 3 holds true, where we determine the value of [U<sub>4,1</sub>...U<sub>4,4</sub>], [U<sub>4,5</sub>...U<sub>4,8</sub>] and [U<sub>4,9</sub>...U<sub>4,12</sub>] by running the data backwards through target partial subkey and S-boxes S41, S42 and S43. Hence, we have simulated attacking our basic cipher by generating 20000 known plaintext/ciphertext values and using linear cryptanalysis, the partial subkey values [K<sub>5,1</sub>...K<sub>5,4</sub>] and [K<sub>5,9</sub>...K<sub>5,12</sub>] with the largest bias magnitude is 0x3 and 0xE which corresponded to the target partial subkey value [0x3, 0xE], confirming that the attack has successfully derived the subkey bits.
+
+Thus, we managed to recover the 5th round key = 0x38ea
+
+# Obtaining the 4th round key
+
+## Linear Approximations used to recover partial subkey values [K<sub>4,2</sub>, K<sub>4,4</sub>, K<sub>4,6</sub>, K<sub>4,8</sub>, K<sub>4,10</sub>, K<sub>4,12</sub>, K<sub>4,14</sub>, K<sub>4,16</sub>]
+
+We use the following approximations of the S-box:
+
+> S<sub>12</sub>: X<sub>1</sub> ⊕ X<sub>3</sub> ⊕ X<sub>4</sub> = Y<sub>2</sub> with probability 12/16 and bias +1/4
+
+> S<sub>22</sub>: X<sub>2</sub> = Y<sub>2</sub> ⊕ Y<sub>4</sub> with probability 4/16 and bias −1/4
+
+Combining the linear approximations above, we get
+
+> U<sub>3,6</sub> ⊕ U<sub>3,14</sub> ⊕ P<sub>5</sub> ⊕ P<sub>7</sub> ⊕ P<sub>8</sub> ⊕ ΣK = 0 (Equation 4)
+
+where 
+
+> ΣK = K<sub>1,5</sub> ⊕ K<sub>1,7</sub> ⊕ K<sub>1,8</sub> ⊕ K<sub>2,6</sub> ⊕ K<sub>3,6</sub> ⊕ K<sub>3,14</sub>
+
+and ΣK is fixed at either 0 or 1 depending on the key of the cipher. By application of the Piling-Up Lemma, the above expression holds with probability 
+
+> 1/2+2(3/4−1/2)(1/4-1/2) = 3/8 (that is, with a bias of −1/8).
+
+> No of plaintext-ciphertext pairs required >= 1/(-1/8)^2 = 64 
+
+As the bias is much larger than the bias obtained when recovering the partial subkey values [K<sub>5,5</sub>...K<sub>5,8</sub>] and [K<sub>5,13</sub>...K<sub>5,16</sub>], the number of plaintext-ciphertext pairs used is much smaller. The linear expression of Equation 4 affects the inputs to S-boxes S<sub>32</sub> and S<sub>34</sub> in the 3rd round and the outputs of these S-boxes correspond to the even bits of the 4th round key. For each partial subkey value, we would increment the count whenever Equation 4 holds true, where we determine the value of [U<sub>3,5</sub>...U<sub>3,8</sub>] and [U<sub>3,13</sub>...U<sub>3,16</sub>] by running the data backwards through the final round of SPN, target partial subkey and S-boxes S32 and S34. Hence, for each plaintext/ciphertext sample, we would try all 256 values for the target partial subkey [K<sub>4,2</sub>, K<sub>4,4</sub>, K<sub>4,6</sub>, K<sub>4,8</sub>, K<sub>4,10</sub>, K<sub>4,12</sub>, K<sub>4,14</sub>, K<sub>4,16</sub>]. Hence, we have simulated attacking our basic cipher by generating 1000 known plaintext/ciphertext values and using linear cryptanalysis, the partial subkey values [K<sub>4,2</sub>, K<sub>4,4</sub>, K<sub>4,6</sub>, K<sub>4,8</sub>, K<sub>4,10</sub>, K<sub>4,12</sub>, K<sub>4,14</sub>, K<sub>4,16</sub>] with the largest bias magnitude is 11110110<sub>2</sub> which corresponded to the target partial subkey value [11110110<sub>2</sub>], confirming that the attack has successfully derived the subkey bits.
+
+## Linear Approximations used to recover partial subkey values [K<sub>4,1</sub>, K<sub>4,3</sub>, K<sub>4,5</sub>, K<sub>4,7</sub>, K<sub>4,9</sub>, K<sub>4,11</sub>, K<sub>4,13</sub>, K<sub>4,15</sub>]
+
+We use the following approximations of the S-box:
+
+> S<sub>12</sub>: X<sub>1</sub> ⊕ X<sub>3</sub> ⊕ X<sub>4</sub> = Y<sub>2</sub> with probability 12/16 and bias +1/4
+
+> S<sub>22</sub>: X<sub>2</sub> = Y<sub>1</sub> ⊕ Y<sub>2</sub> ⊕ Y<sub>3</sub> with probability 10/16 and bias +1/8
+
+Combining the linear approximations above, we get
+
+> U<sub>3,2</sub> ⊕ U<sub>3,6</sub> ⊕ U<sub>3,10</sub> ⊕ P<sub>5</sub> ⊕ P<sub>7</sub> ⊕ P<sub>8</sub> ⊕ ΣK = 0 (Equation 5)
+
+where 
+
+> ΣK = K<sub>1,5</sub> ⊕ K<sub>1,7</sub> ⊕ K<sub>1,8</sub> ⊕ K<sub>2,6</sub> ⊕ K<sub>3,2</sub> ⊕ K<sub>3,6</sub> ⊕ K<sub>3,10</sub>
+
+and ΣK is fixed at either 0 or 1 depending on the key of the cipher. By application of the Piling-Up Lemma, the above expression holds with probability 
+
+> 1/2+2(3/4−1/2)(5/8−1/2) = 9/16 (that is, with a bias of −1/16).
+
+> No of plaintext-ciphertext pairs required >= 1/(1/16)^2 = 256
+
+The linear expression of Equation 5 affects the inputs to S-boxes S<sub>31</sub>, S<sub>32</sub> and S<sub>33</sub> in the 3rd round and the outputs of these S-boxes correspond to the odd bits of the 4th round key. Since the partial subkey values [K<sub>4,2</sub>, K<sub>4,6</sub>, K<sub>4,10</sub>, K<sub>4,14</sub>] has been obtained, for each plaintext/ciphertext sample, we would try all 256 values for the target partial subkey [K<sub>4,1</sub>, K<sub>4,3</sub>, K<sub>4,5</sub>, K<sub>4,7</sub>, K<sub>4,9</sub>, K<sub>4,11</sub>, K<sub>4,13</sub>, K<sub>4,15</sub>]. For each partial subkey value, we would increment the count whenever Equation 5 holds true, where we determine the value of [U<sub>3,1</sub>...U<sub>3,4</sub>], [U<sub>3,5</sub>...U<sub>3,8</sub>] and [U<sub>3,9</sub>...U<sub>3,12</sub>] by running the data backwards through the final round of SPN, target partial subkey and S-boxes S31, S32 and S33. Hence, we have simulated attacking our basic cipher by generating 5000 known plaintext/ciphertext values and using linear cryptanalysis, the partial subkey values [K<sub>4,1</sub>, K<sub>4,3</sub>, K<sub>4,5</sub>, K<sub>4,7</sub>, K<sub>4,9</sub>, K<sub>4,11</sub>, K<sub>4,13</sub>, K<sub>4,15</sub>] with the largest bias magnitude is 01010110<sub>2</sub> which corresponded to the target partial subkey value [01010110<sub>2</sub>], confirming that the attack has successfully derived the subkey bits. 
+
+Thus, we managed to recover the 4th round key = 0x773c
+
+# Obtaining the 3rd round key
+
+## Linear Approximations used to recover partial subkey values [K<sub>3,2</sub>, K<sub>3,4</sub>, K<sub>3,6</sub>, K<sub>3,8</sub>, K<sub>3,10</sub>, K<sub>3,12</sub>, K<sub>3,14</sub>, K<sub>3,16</sub>]
+
+We use the following approximations of the S-box:
+
+> S<sub>12</sub>: X<sub>2</sub> = Y<sub>2</sub> ⊕ Y<sub>4</sub> with probability 4/16 and bias −1/4
+
+Combining the linear approximations above, we get
+
+> U<sub>2,6</sub> ⊕ U<sub>2,14</sub> ⊕ P<sub>6</sub> ⊕ ΣK = 0 (Equation 6)
+
+where 
+
+> ΣK = K<sub>1,5</sub> ⊕ K<sub>1,7</sub> ⊕ K<sub>1,8</sub> ⊕ K<sub>2,6</sub> ⊕ K<sub>2,14</sub>
+
+and ΣK is fixed at either 0 or 1 depending on the key of the cipher. By application of the Piling-Up Lemma, the above expression holds with probability 
+
+> 1/2+(1/4−1/2) = 1/4 (that is, with a bias of −1/4).
+
+> No of plaintext-ciphertext pairs required >= 1/(-1/4)^2 = 16 
+
+As the bias is much larger than the bias obtained when recovering the 4th round key values, the number of plaintext-ciphertext pairs used is much smaller. The linear expression of Equation 6 affects the inputs to S-boxes S<sub>22</sub> and S<sub>24</sub> in the 2nd round and the outputs of these S-boxes correspond to the even bits of the 3rd round key. For each partial subkey value, we would increment the count whenever Equation 6 holds true, where we determine the value of [U<sub>2,5</sub>...U<sub>2,8</sub>] and [U<sub>2,13</sub>...U<sub>2,16</sub>] by running the data backwards through the 3rd and final round of SPN, target partial subkey and S-boxes S22 and S24. Hence, for each plaintext/ciphertext sample, we would try all 256 values for the target partial subkey [K<sub>3,2</sub>, K<sub>3,4</sub>, K<sub>3,6</sub>, K<sub>3,8</sub>, K<sub>3,10</sub>, K<sub>3,12</sub>, K<sub>3,14</sub>, K<sub>3,16</sub>]. Hence, we have simulated attacking our basic cipher by generating 500 known plaintext/ciphertext values and using linear cryptanalysis, the partial subkey values [K<sub>3,2</sub>, K<sub>3,4</sub>, K<sub>3,6</sub>, K<sub>3,8</sub>, K<sub>3,10</sub>, K<sub>3,12</sub>, K<sub>3,14</sub>, K<sub>3,16</sub>] with the largest bias magnitude is 01110011<sub>2</sub> which corresponded to the target partial subkey value [01110011<sub>2</sub>], confirming that the attack has successfully derived the subkey bits.
+
+## Linear Approximations used to recover partial subkey values [K<sub>3,1</sub>, K<sub>3,3</sub>, K<sub>3,5</sub>, K<sub>3,7</sub>, K<sub>3,9</sub>, K<sub>3,11</sub>, K<sub>3,13</sub>, K<sub>3,15</sub>]
+
+We use the following approximations of the S-box:
+
+> S<sub>12</sub>: X<sub>2</sub> = Y<sub>1</sub> ⊕ Y<sub>2</sub> ⊕ Y<sub>3</sub> with probability 10/16 and bias +1/8
+
+Combining the linear approximations above, we get
+
+> U<sub>2,2</sub> ⊕ U<sub>2,6</sub> ⊕ U<sub>2,10</sub> ⊕ P<sub>6</sub> ⊕ ΣK = 0 (Equation 7)
+
+where 
+
+> ΣK = K<sub>1,5</sub> ⊕ K<sub>1,7</sub> ⊕ K<sub>1,8</sub> ⊕ K<sub>2,2</sub> ⊕ K<sub>2,6</sub> ⊕ K<sub>2,10</sub>
+
+and ΣK is fixed at either 0 or 1 depending on the key of the cipher. By application of the Piling-Up Lemma, the above expression holds with probability 
+
+> 1/2+(5/8−1/2) = 5/8 (that is, with a bias of 1/8).
+
+> No of plaintext-ciphertext pairs required >= 1/(1/8)^2 = 64
+
+The linear expression of Equation 7 affects the inputs to S-boxes S<sub>21</sub>, S<sub>22</sub> and S<sub>23</sub> in the 2nd round and the outputs of these S-boxes correspond to the odd bits of the 3rd round key. Since the partial subkey values [K<sub>3,2</sub>, K<sub>3,6</sub>, K<sub>3,10</sub>, K<sub>3,14</sub>] has been obtained, for each plaintext/ciphertext sample, we would try all 256 values for the target partial subkey [K<sub>3,1</sub>, K<sub>3,3</sub>, K<sub>3,5</sub>, K<sub>3,7</sub>, K<sub>3,9</sub>, K<sub>3,11</sub>, K<sub>3,13</sub>, K<sub>3,15</sub>]. For each partial subkey value, we would increment the count whenever Equation 7 holds true, where we determine the value of [U<sub>2,1</sub>...U<sub>2,4</sub>], [U<sub>2,5</sub>...U<sub>2,8</sub>] and [U<sub>2,9</sub>...U<sub>2,12</sub>] by running the data backwards through the 3rd and final round of SPN, target partial subkey and S-boxes S21, S22 and S23. Hence, we have simulated attacking our basic cipher by generating 2500 known plaintext/ciphertext values and using linear cryptanalysis, the partial subkey values [K<sub>3,1</sub>, K<sub>3,3</sub>, K<sub>3,5</sub>, K<sub>3,7</sub>, K<sub>3,9</sub>, K<sub>3,11</sub>, K<sub>3,13</sub>, K<sub>3,15</sub>] with the largest bias magnitude is 10111101<sub>2</sub> which corresponded to the target partial subkey value [10111101<sub>2</sub>], confirming that the attack has successfully derived the subkey bits. 
+
+Thus, we managed to recover the 3rd round key = 0x9fa7
+
+# Obtaining the 2nd round key
+
+## Recovering partial subkey values [K<sub>2,2</sub>, K<sub>2,4</sub>, K<sub>2,6</sub>, K<sub>2,8</sub>, K<sub>2,10</sub>, K<sub>2,12</sub>, K<sub>2,14</sub>, K<sub>2,16</sub>]
+
+Since U<sub>1,i</sub>=P<sub>i</sub>+K<sub>1,i</sub>,
+
+> U<sub>1,5</sub> ⨁ U<sub>1,6</sub> ⨁ U<sub>1,7</sub> ⨁ U<sub>1,8</sub> ⨁ U<sub>1,13</sub> ⨁ U<sub>1,14</sub> ⨁ U<sub>1,15</sub> ⨁ U<sub>1,16</sub> = P<sub>5</sub> ⨁ P<sub>6</sub> ⨁ P<sub>7</sub> ⨁ P<sub>8</sub> ⨁ P<sub>13</sub> ⨁ P<sub>14</sub> ⨁ P<sub>15</sub> ⨁ P<sub>16</sub> ⨁ K<sub>1,5</sub> ⨁ K<sub>1,6</sub> ⨁ K<sub>1,7</sub> ⨁ K<sub>1,8</sub> ⨁ K<sub>1,13</sub> ⨁ K<sub>1,14</sub> ⨁ K<sub>1,15</sub> ⨁ K<sub>1,16</sub>
+
+From the above equation:
+
+> U<sub>1,5</sub> ⨁ U<sub>1,6</sub> ⨁ U<sub>1,7</sub> ⨁ U<sub>1,8</sub> ⨁ U<sub>1,13</sub> ⨁ U<sub>1,14</sub> ⨁ U<sub>1,15</sub> ⨁ U<sub>1,16</sub> ⨁ P<sub>5</sub> ⨁ P<sub>6</sub> ⨁ P<sub>7</sub> ⨁ P<sub>8</sub> ⨁ P<sub>13</sub> ⨁ P<sub>14</sub> ⨁ P<sub>15</sub> ⨁ P<sub>16</sub> ⨁ ∑K = 0 (Equation 8)
+
+where ∑K can be 0 or 1 depending on the key of the cipher
+
+As there are no linear approximations to be used, the input sum and output sum is set to 0
+
+> Bias = 0.5
+
+> No of plaintext-ciphertext pairs required >= 1/(1/2)^2 = 4
+
+As the bias is much larger than the bias obtained when recovering the 3rd round key values, the number of plaintext-ciphertext pairs used is much smaller. The linear expression of Equation 8 affects the inputs to S-boxes S<sub>12</sub> and S<sub>14</sub> in the 1st round and the outputs of these S-boxes correspond to the even bits of the 2nd round key. For each partial subkey value, we would increment the count whenever Equation 8 holds true, where we determine the value of [U<sub>1,5</sub>...U<sub>1,8</sub>] and [U<sub>1,13</sub>...U<sub>1,16</sub>] by running the data backwards through the 2nd, 3rd and final round of SPN, target partial subkey and S-boxes S12 and S14. Hence, for each plaintext/ciphertext sample, we would try all 256 values for the target partial subkey [K<sub>2,2</sub>, K<sub>2,4</sub>, K<sub>2,6</sub>, K<sub>2,8</sub>, K<sub>2,10</sub>, K<sub>2,12</sub>, K<sub>2,14</sub>, K<sub>2,16</sub>]. Hence, we have simulated attacking our basic cipher by generating 100 known plaintext/ciphertext values and using linear cryptanalysis, the partial subkey values [K<sub>2,2</sub>, K<sub>2,4</sub>, K<sub>2,6</sub>, K<sub>2,8</sub>, K<sub>2,10</sub>, K<sub>2,12</sub>, K<sub>2,14</sub>, K<sub>2,16</sub>] with the largest bias magnitude is 11001110<sub>2</sub> which corresponded to the target partial subkey value [11001110<sub>2</sub>], confirming that the attack has successfully derived the subkey bits.
+
+## Recovering partial subkey values [K<sub>2,1</sub>, K<sub>2,3</sub>, K<sub>2,5</sub>, K<sub>2,7</sub>, K<sub>2,9</sub>, K<sub>2,11</sub>, K<sub>2,13</sub>, K<sub>2,15</sub>]
+
+Since U<sub>1,i</sub>=P<sub>i</sub>+K<sub>1,i</sub>,
+
+> U<sub>1,1</sub> ⨁ U<sub>1,2</sub> ⨁ U<sub>1,3</sub> ⨁ U<sub>1,4</sub> ⨁ U<sub>1,9</sub> ⨁ U<sub>1,10</sub> ⨁ U<sub>1,11</sub> ⨁ U<sub>1,12</sub> = P<sub>1</sub> ⨁ P<sub>2</sub> ⨁ P<sub>3</sub> ⨁ P<sub>4</sub> ⨁ P<sub>9</sub> ⨁ P<sub>10</sub> ⨁ P<sub>11</sub> ⨁ P<sub>12</sub> ⨁ K<sub>1,1</sub> ⨁ K<sub>1,2</sub> ⨁ K<sub>1,3</sub> ⨁ K<sub>1,4</sub> ⨁ K<sub>1,9</sub> ⨁ K<sub>1,10</sub> ⨁ K<sub>1,11</sub> ⨁ K<sub>1,12</sub>
+
+From the above equation:
+
+> U<sub>1,1</sub> ⨁ U<sub>1,2</sub> ⨁ U<sub>1,3</sub> ⨁ U<sub>1,4</sub> ⨁ U<sub>1,9</sub> ⨁ U<sub>1,10</sub> ⨁ U<sub>1,11</sub> ⨁ U<sub>1,12</sub> ⨁ P<sub>1</sub> ⨁ P<sub>2</sub> ⨁ P<sub>3</sub> ⨁ P<sub>4</sub> ⨁ P<sub>9</sub> ⨁ P<sub>10</sub> ⨁ P<sub>11</sub> ⨁ P<sub>12</sub> ⨁ ∑K = 0 (Equation 9)
+
+where ∑K can be 0 or 1 depending on the key of the cipher
+
+As there are no linear approximations to be used, the input sum and output sum is set to 0
+
+> Bias = 0.5
+
+> No of plaintext-ciphertext pairs required >= 1/(1/2)^2 = 4
+
+The linear expression of Equation 9 affects the inputs to S-boxes S<sub>11</sub> and S<sub>13</sub> in the 1st round and the outputs of these S-boxes correspond to the odd bits of the 2nd round key. For each plaintext/ciphertext sample, we would try all 256 values for the target partial subkey [K<sub>2,1</sub>, K<sub>2,3</sub>, K<sub>2,5</sub>, K<sub>2,7</sub>, K<sub>2,9</sub>, K<sub>2,11</sub>, K<sub>2,13</sub>, K<sub>2,15</sub>]. For each partial subkey value, we would increment the count whenever Equation 7 holds true, where we determine the value of [U<sub>1,1</sub>...U<sub>1,4</sub>] and [U<sub>1,9</sub>...U<sub>1,12</sub>] by running the data backwards through the 2nd, 3rd and final round of SPN, target partial subkey and S-boxes S11 and S13. Hence, we have simulated attacking our basic cipher by generating 100 known plaintext/ciphertext values and using linear cryptanalysis, the partial subkey values [K<sub>2,1</sub>, K<sub>2,3</sub>, K<sub>2,5</sub>, K<sub>2,7</sub>, K<sub>2,9</sub>, K<sub>2,11</sub>, K<sub>2,13</sub>, K<sub>2,15</sub>] with the largest bias magnitude is 10011011<sub>2</sub> which corresponded to the target partial subkey value [10011011<sub>2</sub>], confirming that the attack has successfully derived the subkey bits. 
+
+Thus, we managed to recover the 2nd round key = 0xd2de
+
+# Obtaining the 1st round key
+
+Since the 2nd, 3rd, 4th and 5th round key is already obtained, obtaining the 1st round key is to simply take any known plaintext-ciphertext pair, run the ciphertext data backwards through the SPN network until before the 1st key-mixing and XORed the resultant data with its plaintext pair to get the round key.
+
+Thus, we managed to recover the 1st round key = 0x6ff9
