@@ -344,3 +344,8 @@ Thus, we managed to recover the 2nd round key = 0xd2de
 Since the 2nd, 3rd, 4th and 5th round key is already obtained, obtaining the 1st round key is to simply take any known plaintext-ciphertext pair, run the ciphertext data backwards through the SPN network until before the 1st key-mixing and XORed the resultant data with its plaintext pair to get the round key.
 
 Thus, we managed to recover the 1st round key = 0x6ff9
+
+# References
+
+* H. M. Heys, “A TUTORIAL ON LINEAR AND DIFFERENTIAL CRYPTANALYSIS”, Cryptologia, vol. 26, no. 3, pp. 189–221, 2002.
+* H. M. Heys, "A Tutorial on the Implementation of Block Ciphers: Software and Hardware Applications," Cryptology ePrint Archive, Report 2020/1545, 2020. [Online]. Available: https://ia.cr/2020/1545
