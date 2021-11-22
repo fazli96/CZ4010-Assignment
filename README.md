@@ -231,7 +231,7 @@ where
 
 and ΣK is fixed at either 0 or 1 depending on the key of the cipher. By application of the Piling-Up Lemma, the above expression holds with probability 
 
-> 1/2+2(3/4−1/2)(5/8−1/2) = 9/16 (that is, with a bias of −1/16).
+> 1/2+2(3/4−1/2)(5/8−1/2) = 9/16 (that is, with a bias of 1/16).
 
 > No of plaintext-ciphertext pairs required >= 1/(1/16)^2 = 256
 
