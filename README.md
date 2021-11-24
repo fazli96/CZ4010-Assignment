@@ -24,15 +24,12 @@ This project has been developed using Google Colab with Python 3.6.9. The main f
 
 # Running the code
 
-There are two ways of running the code, one being using Google Colab and the other using Jupyter Notebook.
-
-* Google Colab
-
-> Clone the repository into a folder in your local machine and upload this folder into your Google Drive. Once uploaded, run CZ4010_Assignment.ipynb in Google Colab.
+To run the code on your local machine, you can use
 
 * Jupyter Notebook
 
-> Clone the repository into a folder in your local machine. Open Jupyter notebook and run CZ4010_Assignment.ipynb located in that folder.
+> Clone this github repository into a folder on your local machine
+> Open Jupyter notebook and run CZ4010_Assignment.ipynb located in that folder.
 
 # Cipher
 
