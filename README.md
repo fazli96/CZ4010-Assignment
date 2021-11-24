@@ -346,3 +346,4 @@ Thus, we managed to recover the 1st round key = 0x6ff9
 
 * H. M. Heys, “A TUTORIAL ON LINEAR AND DIFFERENTIAL CRYPTANALYSIS”, Cryptologia, vol. 26, no. 3, pp. 189–221, 2002.
 * H. M. Heys, "A Tutorial on the Implementation of Block Ciphers: Software and Hardware Applications," Cryptology ePrint Archive, Report 2020/1545, 2020. [Online]. Available: https://ia.cr/2020/1545
+* M. Matsui, "Linear Cryptanalysis Method for DES Cipher", Advances in Cryptology - EUROCRYPT ’93 (Lecture Notes in Computer Science no. 765), Springer-Verlag, pp. 386-397, 1994.
