@@ -1,6 +1,7 @@
 # CZ4010-Assignment
-Linear Cryptanalysis on SPN cipher
-By Swa Ju Xiang and Mohamed Fazli
+Linear Cryptanalysis on SPN Cipher
+
+By: Swa Ju Xiang and Mohamed Fazli
 
 # Objective
 
