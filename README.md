@@ -1,5 +1,6 @@
 # CZ4010-Assignment
 Linear Cryptanalysis on SPN cipher
+By Swa Ju Xiang and Mohamed Fazli
 
 # Objective
 
@@ -22,6 +23,16 @@ This project has been developed using Google Colab with Python 3.6.9. The main f
 >* Recover all 16 bits of the final round key using linear cryptanalytic techniques
 >* Recover the rest of the round keys (1st, 2nd, 3rd, 4th rounds) using linear cryptanalytic techniques
 
+# Dependencies
+
+The following are the dependencies for the project:
+
+* from math import ceil
+* import string
+* import random
+* import pandas as pd
+* pd.set_option("max_rows", 999)
+
 # Running the code
 
 To run the code on your local machine, you can use
@@ -29,7 +40,8 @@ To run the code on your local machine, you can use
 * Jupyter Notebook
 
 > Clone this github repository into a folder on your local machine
-> Open Jupyter notebook and run CZ4010_Assignment.ipynb located in that folder.
+> Run Jupyter notebook and open CZ4010_Assignment.ipynb located in that folder
+> Run the cells sequentially from top to bottom
 
 # Cipher
 
@@ -67,7 +79,7 @@ To achieve the key mixing, we use a simple bitwise exclusive-OR between the key 
 
 In order to encrypt, data is passed forward through the SPN network undergoing substitution, permutation and key mixing. The encryption of a plaintext, a 16-bit data block, is illustrated in the function encrypt(pt, k) where pt is the plaintext and k is all the round keys combined together.
 
-Generating n pairs of plaintext and ciphertext is illustrated in the function generate_plaintext_ciphertext_pairs(num_of_plaintext_ciphertext_pairs)
+Generating n pairs of plaintext and ciphertext is illustrated in the function generate_plaintext_ciphertext_pairs(num_of_plaintext_ciphertext_pairs). A pre-defined csv file where the plaintext is generated using random.sample(range(1, 65535), n) is used for the plaintext-ciphertext pair generation.
 
 In order to decrypt, data is passed backwards through the SPN network. However, the mappings used in the S-boxes of the decryption network are the inverse of the mappings
 in the encryption network. This implies that in order for an SPN to allow for decryption, all S-boxes must be bijective, that is, a one-to-one mapping with the same number input and output bits. The round keys are also applied in reverse order and the bits of the round keys must be moved around according to the P-box mapping. The decryption of a ciphertext is illustrated in the function decrypt(ct, k) where ct is the ciphertext and k is all the round keys combined together.
